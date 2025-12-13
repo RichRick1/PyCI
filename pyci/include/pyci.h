@@ -221,6 +221,8 @@ void clearbit_det(const long, ulong *);
 
 void compute_rdms(const DOCIWfn &, const double *, double *, double *);
 
+void compute_rdms_1234(const DOCIWfn &, const double *, double *, double *, double *, double *, double *, double *, double *);
+
 void compute_rdms(const FullCIWfn &, const double *, double *, double *);
 
 void compute_rdms(const GenCIWfn &, const double *, double *, double *);
@@ -251,6 +253,8 @@ long py_popcnt(const Array<ulong>);
 long py_ctz(const Array<ulong>);
 
 pybind11::tuple py_compute_rdms_doci(const DOCIWfn &, const Array<double>);
+
+pybind11::tuple py_compute_rdms_1234_doci(const DOCIWfn &, const Array<double>);
 
 pybind11::tuple py_compute_rdms_fullci(const FullCIWfn &, const Array<double>);
 
@@ -671,6 +675,12 @@ public:
 
     template<class WfnType>
     void py_update(const SQuantOp &, const WfnType &);
+
+    Array<double> py_data() const;
+
+    Array<long> py_indices() const;
+
+    Array<long> py_indptr() const;
 
 private:
     void sort_row(const long);

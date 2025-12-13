@@ -26,7 +26,7 @@ using namespace pyci;
 Section: Python C extension.
 */
 
-BEGIN_MODULE(pyci, m)
+BEGIN_MODULE(_pyci, m)
 
 /*
 Section: Initialization
@@ -1083,6 +1083,10 @@ n : int
 
 sparse_op.def("squeeze", &SparseOp::squeeze, "Free any unused memory allocated to this object.");
 
+sparse_op.def("data", &SparseOp::py_data, "Return CSR matrix data vector", py::keep_alive<0, 1>());
+sparse_op.def("indices", &SparseOp::py_indices, "Return CSR matrix indices vector", py::keep_alive<0, 1>());
+sparse_op.def("indptr", &SparseOp::py_indptr, "Return CSR matrix index pointer vector", py::keep_alive<0, 1>());
+
 /*
 Section: Free functions
 */
@@ -1241,6 +1245,46 @@ For Generalized CI wave functions, ``rdm1`` and ``rdm2`` are the full 1-RDM and 
 
 )""",
       py::arg("wfn"), py::arg("coeffs"));
+
+m.def("compute_rdms_1234", &py_compute_rdms_1234_doci, R"""(
+Compute the one-, two-, three-, and four-particle(not implemented yet) reduced density matrices (RDMs) of a wave function.
+
+Parameters
+----------
+wfn : pyci.wavefunction
+    Wave function.
+coeffs : numpy.ndarray
+    Coefficient vector.
+
+Returns
+-------
+For DOCI wave functions, this method returns two nbasis-by-nbasis matrices and two nbasis-by-nbasis-by-nbasis,
+ which include the unique seniority-zero and seniority-two terms from the full 2-RDMs:
+
+.. math::
+
+    D_0 = \left<pp|qq\right>
+
+.. math::
+
+    D_2 = \left<pq|pq\right>
+
+.. math::
+
+    D_3 = \left<pqr|pqr\right>
+
+.. math::
+
+    D_4 = \left<pqq|prr\right>
+
+
+Notes
+-----
+This method calculates all RDMs from 1-RDM to 4-RDM (so far implemented only to 3RDM) for a given DOCI wave function.
+
+)""",
+      py::arg("wfn"), py::arg("coeffs"));
+
 
 m.def("compute_rdms", &py_compute_rdms_fullci, py::arg("wfn"), py::arg("coeffs"));
 
